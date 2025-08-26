@@ -1,0 +1,39 @@
+# Name of the workflow as it appears in the GitHub Actions tab
+name: Python Build and Test
+
+# Event that triggers the workflow
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# A job defines a set of steps that run on a runner
+jobs:
+  build:
+    # Use the latest Ubuntu environment
+    runs-on: ubuntu-latest
+
+    # A sequence of tasks to execute as part of the job
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # Specify your Python version
+
+      # Step 3: Install project dependencies (if any)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          # Install from requirements.txt if it exists
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # Step 4: Run the tests using pytest
+      - name: Run tests with pytest
+        run: pytest
